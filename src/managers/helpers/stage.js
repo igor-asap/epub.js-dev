@@ -149,7 +149,7 @@ class Stage {
 		if(!isNumber(this.settings.width) ||
 			 !isNumber(this.settings.height) ) {
 			this.resizeFunc = throttle(func, 50);
-			window.addEventListener("resize", this.resizeFunc, false);
+			// window.addEventListener("resize", this.resizeFunc, false);
 		}
 
 	}
@@ -353,7 +353,7 @@ class Stage {
 				this.element.removeChild(this.container);
 			}
 
-			window.removeEventListener("resize", this.resizeFunc);
+			// window.removeEventListener("resize", this.resizeFunc);
 			window.removeEventListener("orientationChange", this.orientationChangeFunc);
 
 		}
