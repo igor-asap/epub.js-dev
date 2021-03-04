@@ -44,6 +44,11 @@ class DefaultViewManager {
 
 		this.rendered = false;
 
+		this.displayBlocked = false;
+
+		this.setDisplayBlocked = function(displayBlocked) {
+		  this.displayBlocked = displayBlocked;
+		}
 	}
 
 	render(element, size){
@@ -194,42 +199,44 @@ class DefaultViewManager {
 	}
 
 	resize(width, height, epubcfi){
-		let stageSize = this.stage.size(width, height);
+		if(!this.displayBlocked) {
+			let stageSize = this.stage.size(width, height);
 
-		// For Safari, wait for orientation to catch up
-		// if the window is a square
-		this.winBounds = windowBounds();
-		if (this.orientationTimeout &&
-				this.winBounds.width === this.winBounds.height) {
-			// reset the stage size for next resize
-			this._stageSize = undefined;
-			return;
+			// For Safari, wait for orientation to catch up
+			// if the window is a square
+			this.winBounds = windowBounds();
+			if (this.orientationTimeout &&
+					this.winBounds.width === this.winBounds.height) {
+				// reset the stage size for next resize
+				this._stageSize = undefined;
+				return;
+			}
+
+			if (this._stageSize &&
+					this._stageSize.width === stageSize.width &&
+					this._stageSize.height === stageSize.height ) {
+				// Size is the same, no need to resize
+				return;
+			}
+
+			this._stageSize = stageSize;
+
+			this._bounds = this.bounds();
+
+			// Clear current views
+			this.clear();
+
+			// Update for new views
+			this.viewSettings.width = this._stageSize.width;
+			this.viewSettings.height = this._stageSize.height;
+
+			this.updateLayout();
+
+			this.emit(EVENTS.MANAGERS.RESIZED, {
+				width: this._stageSize.width,
+				height: this._stageSize.height
+			}, epubcfi);
 		}
-
-		if (this._stageSize &&
-				this._stageSize.width === stageSize.width &&
-				this._stageSize.height === stageSize.height ) {
-			// Size is the same, no need to resize
-			return;
-		}
-
-		this._stageSize = stageSize;
-
-		this._bounds = this.bounds();
-
-		// Clear current views
-		this.clear();
-
-		// Update for new views
-		this.viewSettings.width = this._stageSize.width;
-		this.viewSettings.height = this._stageSize.height;
-
-		this.updateLayout();
-
-		this.emit(EVENTS.MANAGERS.RESIZED, {
-			width: this._stageSize.width,
-			height: this._stageSize.height
-		}, epubcfi);
 	}
 
 	createView(section, forceRight) {
