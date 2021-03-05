@@ -149,15 +149,14 @@ class Stage {
 		if(!isNumber(this.settings.width) ||
 			 !isNumber(this.settings.height) ) {
 			this.resizeFunc = throttle(func, 50);
-			console.log("RESIZED");
-			// window.addEventListener("resize", this.resizeFunc, false);
+			window.addEventListener("resize", this.resizeFunc, false);
 		}
 
 	}
 
 	onOrientationChange(func){
 		this.orientationChangeFunc = func;
-		//window.addEventListener("orientationchange", this.orientationChangeFunc, false);
+		window.addEventListener("orientationchange", this.orientationChangeFunc, false);
 	}
 
 	size(width, height){
@@ -354,8 +353,8 @@ class Stage {
 				this.element.removeChild(this.container);
 			}
 
-			// window.removeEventListener("resize", this.resizeFunc);
-			// window.removeEventListener("orientationChange", this.orientationChangeFunc);
+			window.removeEventListener("resize", this.resizeFunc);
+			window.removeEventListener("orientationChange", this.orientationChangeFunc);
 
 		}
 	}
